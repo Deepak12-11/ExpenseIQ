@@ -1,0 +1,20 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local configuration
+config/db.local.php
+
+# Dependencies and logs
+vendor/
+node_modules/
+*.log
+
+# IDE and operating system files
+.vscode/
+.DS_Store
+Thumbs.db
+# Local configuration files
+config/db.php
+config/security.php

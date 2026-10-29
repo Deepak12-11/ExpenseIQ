@@ -1,0 +1,28 @@
+# ========================================================
+# Apache Security & Access Hardening
+# ========================================================
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive files from direct web access
+<FilesMatch "^(database\.sql|\.env|\.git|composer\.json|composer\.lock)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block access to config folder directly
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^config/.*$ - [F,L]
+</IfModule>
+
+# Security HTTP Response Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+

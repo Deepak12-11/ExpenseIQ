@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="description" content="Personal Expense Tracker - Full stack budgeting and analytics web app">
+  <meta name="theme-color" content="#0a0e1a">
+  <title>ExpenseIQ - Executive Dashboard & Smart Budget Planner</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/animations.css">
+</head>
+<body>
+
+<div class="sidebar-backdrop"></div>
+
+<div class="app-container">
+
+  <!-- Sidebar Navigation (Laptop & Desktop) -->
+  <aside class="app-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-wallet"></i>
+      </div>
+      <div class="brand-text">
+        <h2>ExpenseIQ</h2>
+        <p>Smart Finance</p>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Navigation</div>
+      
+      <a href="index.php" class="nav-item active">
+        <i class="fa-solid fa-chart-pie"></i>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="expenses.php" class="nav-item">
+        <i class="fa-solid fa-receipt"></i>
+        <span>All Expenses</span>
+      </a>
+
+      <a href="budgets.php" class="nav-item">
+        <i class="fa-solid fa-bullseye"></i>
+        <span>Budget Planner</span>
+      </a>
+
+      <a href="reports.php" class="nav-item">
+        <i class="fa-solid fa-file-invoice"></i>
+        <span>Monthly Reports</span>
+      </a>
+
+      <div class="nav-section-title" style="margin-top: 14px;">Smart Tools</div>
+
+      <a href="javascript:void(0)" class="nav-item open-smart-budget-modal" style="color: #10b981;">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>Smart Budget Auto-Plan</span>
+      </a>
+
+      <a href="javascript:void(0)" class="nav-item open-add-expense-modal" style="color: var(--accent-primary);">
+        <i class="fa-solid fa-circle-plus"></i>
+        <span>Add Daily Expense</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-snippet">
+        <div class="avatar-badge">SD</div>
+        <div class="user-info">
+          <div class="user-name">Student Dev</div>
+          <div class="user-status" style="color: var(--success);">
+            Interactive Client Mode
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrap -->
+  <div class="app-main">
+
+    <!-- Top Sticky Header -->
+    <header class="app-header">
+      <div class="header-left">
+        <button class="mobile-menu-toggle" id="mobile-menu-btn" title="Toggle Navigation Drawer">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="header-title-wrap">
+          <h1>Executive Dashboard</h1>
+          <p>Real-time financial analytics, smart budgeting, and expense control</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Live Date Badge -->
+        <div class="date-badge">
+          <i class="fa-regular fa-calendar"></i>
+          <span id="current-date-display">Today</span>
+        </div>
+
+        <!-- Smart Budget Planner CTA -->
+        <button class="btn btn-secondary open-smart-budget-modal btn-interactive" style="border-color: rgba(16, 185, 129, 0.3); color: #10b981;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>Plan Budget</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button class="btn-icon-only" id="theme-toggle-btn" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+
+        <!-- Quick Add Expense CTA -->
+        <button class="btn btn-primary open-add-expense-modal btn-interactive">
+          <i class="fa-solid fa-plus"></i>
+          <span>Add Expense</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Content -->
+    <main class="app-content">
+
+      <!-- Informative Quick Start Banner -->
+      <div class="db-alert-banner connected animate-fadeInDown">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <i class="fa-solid fa-shield-halved" style="font-size: 1.15rem; color: #10b981;"></i>
+          <div>
+            <strong>Interactive Preview Active:</strong> You can test all budgeting tools, add expenses, and switch themes. To persist data in MySQL, import <code>database.sql</code> and open <code>index.php</code> with Apache.
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="document.getElementById('db-guide-modal').classList.add('active');">
+          Database Guide
+        </button>
+      </div>
+
+      <!-- 1. Executive Budget Health & Intelligence Hero -->
+      <div class="budget-hero-card animate-fadeInUp delay-1">
+        <div class="budget-hero-header">
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div class="brand-icon" style="background: linear-gradient(135deg, #10b981, #06b6d4);">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div>
+              <h3 style="font-size: 1.28rem; margin-bottom: 2px;">Monthly Budget Health</h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0;">
+                Auto-adjusting financial ceiling & burn rate tracker
+              </p>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span class="badge" id="hero-utilization-pct" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; font-size: 0.82rem; padding: 6px 12px;">
+              0% utilized
+            </span>
+            <button class="btn btn-primary btn-sm open-smart-budget-modal btn-interactive">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Configure Budget</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Overall Progress Bar -->
+        <div class="progress-track" style="height: 10px; margin-bottom: 12px;">
+          <div class="progress-bar-fill progress-success" id="hero-progress-bar" style="width: 0%;"></div>
+        </div>
+
+        <!-- Four Key Health Metrics -->
+        <div class="hero-stats-row">
+          <div class="hero-stat-box">
+            <span class="hero-stat-label">Total Monthly Budget</span>
+            <span class="hero-stat-val" id="hero-total-budget">₹ 0.00</span>
+          </div>
+          <div class="hero-stat-box">
+            <span class="hero-stat-label">Total Outflow (Spent)</span>
+            <span class="hero-stat-val" id="hero-total-spent">₹ 0.00</span>
+          </div>
+          <div class="hero-stat-box">
+            <span class="hero-stat-label">Remaining Buffer</span>
+            <span class="hero-stat-val" id="hero-remaining-budget" style="color: var(--success);">₹ 0.00</span>
+          </div>
+          <div class="hero-stat-box">
+            <span class="hero-stat-label">Safe Daily Spending Cap</span>
+            <span class="hero-stat-val" id="hero-safe-daily" style="color: #38bdf8;">₹ 0.00/day</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. KPI Summary Cards -->
+      <div class="dashboard-grid">
+        <div class="card kpi-card card-hover animate-fadeInUp delay-2">
+          <div>
+            <div class="kpi-header">
+              <span class="kpi-title">Spent This Month</span>
+              <div class="kpi-icon-wrap icon-purple">
+                <i class="fa-solid fa-wallet"></i>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpi-month-total">₹ 0.00</div>
+          </div>
+          <div class="kpi-footer">
+            <span class="badge-trend trend-neutral" id="kpi-month-trend">
+              <i class="fa-solid fa-spinner fa-spin"></i> Calculating trend...
+            </span>
+          </div>
+        </div>
+
+        <div class="card kpi-card card-hover animate-fadeInUp delay-3">
+          <div>
+            <div class="kpi-header">
+              <span class="kpi-title">Today's Expenses</span>
+              <div class="kpi-icon-wrap icon-green">
+                <i class="fa-solid fa-calendar-day"></i>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpi-today-total">₹ 0.00</div>
+          </div>
+          <div class="kpi-footer">
+            <span style="color: var(--text-muted); font-size: 0.78rem;">
+              <i class="fa-regular fa-clock"></i> Live calculations
+            </span>
+          </div>
+        </div>
+
+        <div class="card kpi-card card-hover animate-fadeInUp delay-4">
+          <div>
+            <div class="kpi-header">
+              <span class="kpi-title">Daily Average Spend</span>
+              <div class="kpi-icon-wrap icon-amber">
+                <i class="fa-solid fa-chart-line"></i>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpi-daily-avg">₹ 0.00</div>
+          </div>
+          <div class="kpi-footer">
+            <span style="color: var(--text-muted); font-size: 0.78rem;">
+              Based on active days
+            </span>
+          </div>
+        </div>
+
+        <div class="card kpi-card card-hover animate-fadeInUp delay-5">
+          <div>
+            <div class="kpi-header">
+              <span class="kpi-title">Peak Transaction</span>
+              <div class="kpi-icon-wrap icon-cyan">
+                <i class="fa-solid fa-arrow-trend-up"></i>
+              </div>
+            </div>
+            <div class="kpi-value" id="kpi-highest-expense">₹ 0.00</div>
+          </div>
+          <div class="kpi-footer">
+            <span style="color: var(--text-muted); font-size: 0.78rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" id="kpi-highest-title">
+              Largest single expense
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Charts Row -->
+      <div class="charts-grid-2">
+        <div class="card animate-fadeInUp delay-3">
+          <div class="card-header-flex">
+            <div class="card-title-group">
+              <h3>Daily Spending Trend</h3>
+              <p>Trajectory across days of the current month</p>
+            </div>
+            <span class="badge badge-outline">
+              <i class="fa-solid fa-chart-area"></i> Active Month
+            </span>
+          </div>
+          <div class="chart-container">
+            <canvas id="dailyTrendChart"></canvas>
+          </div>
+        </div>
+
+        <div class="card animate-fadeInUp delay-4">
+          <div class="card-header-flex">
+            <div class="card-title-group">
+              <h3>Category Allocation</h3>
+              <p>Spending share across categories</p>
+            </div>
+          </div>
+          <div class="chart-container" style="min-height: 200px; max-height: 210px;">
+            <canvas id="categoryDoughnutChart"></canvas>
+          </div>
+          <div class="category-summary-list" id="category-legend-list"></div>
+        </div>
+      </div>
+
+      <!-- 4. Bottom Row: Recent Transactions & 6-Month Comparison -->
+      <div class="charts-grid-2">
+        <div class="card animate-fadeInUp delay-5">
+          <div class="card-header-flex">
+            <div class="card-title-group">
+              <h3>Recent Transactions</h3>
+              <p>Latest recorded spending items</p>
+            </div>
+            <button class="btn btn-secondary btn-sm open-add-expense-modal">
+              <i class="fa-solid fa-plus"></i> New
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Expense</th>
+                  <th>Method</th>
+                  <th>Date</th>
+                  <th>Amount</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="recent-transactions-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <div class="card animate-fadeInUp delay-5">
+            <div class="card-header-flex">
+              <div class="card-title-group">
+                <h3>Monthly Trend Comparison</h3>
+                <p>Spending history over past 6 months</p>
+              </div>
+            </div>
+            <div class="chart-container" style="min-height: 180px; max-height: 190px;">
+              <canvas id="monthlyHistoryChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card animate-fadeInUp delay-6">
+            <div class="card-header-flex">
+              <div class="card-title-group">
+                <h3>Category Limits Snapshot</h3>
+                <p>Monthly cap progress per category</p>
+              </div>
+            </div>
+            <div id="dashboard-budget-list"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- Mobile Bottom Navigation Bar -->
+<nav class="mobile-bottom-nav">
+  <a href="index.php" class="mobile-nav-link active">
+    <i class="fa-solid fa-chart-pie"></i>
+    <span>Overview</span>
+  </a>
+
+  <a href="expenses.php" class="mobile-nav-link">
+    <i class="fa-solid fa-receipt"></i>
+    <span>Expenses</span>
+  </a>
+
+  <button class="mobile-nav-cta open-add-expense-modal" title="Add Daily Expense">
+    <i class="fa-solid fa-plus"></i>
+  </button>
+
+  <a href="budgets.php" class="mobile-nav-link">
+    <i class="fa-solid fa-bullseye"></i>
+    <span>Budgets</span>
+  </a>
+
+  <a href="reports.php" class="mobile-nav-link">
+    <i class="fa-solid fa-file-invoice"></i>
+    <span>Reports</span>
+  </a>
+</nav>
+
+<!-- Smart Budget Planner Modal -->
+<div class="modal-overlay" id="smart-budget-modal">
+  <div class="modal-content animate-modal" style="max-width: 580px;">
+    <div class="modal-header">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon" style="width: 34px; height: 34px; font-size: 0.95rem; background: linear-gradient(135deg, #10b981, #06b6d4);">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+        </div>
+        <div>
+          <h3 style="font-size: 1.15rem;">Smart Budget Planner</h3>
+          <p style="font-size: 0.74rem; color: var(--text-muted); margin: 0;">Enter your total budget & auto-allocate by strategy</p>
+        </div>
+      </div>
+      <button class="modal-close-btn close-smart-budget-modal" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form id="smart-budget-form">
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="smart-total-budget">Total Monthly Budget / Income (₹) *</label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+            <input type="number" id="smart-total-budget" class="form-control" placeholder="30000" step="500" min="1000" required>
+          </div>
+          <small style="color: var(--text-muted); font-size: 0.74rem; margin-top: 4px; display: block;">
+            The app will automatically calculate and distribute spending limits for each category.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Choose Budgeting Strategy</label>
+          <div class="strategy-cards-grid">
+            <div class="strategy-card active" data-strategy="50-30-20">
+              <h5>50 / 30 / 20 Rule</h5>
+              <p>50% Needs & Bills, 30% Dining & Fun, 20% Savings & Education</p>
+            </div>
+            <div class="strategy-card" data-strategy="student">
+              <h5>Student Plan</h5>
+              <p>Higher allocation for Food, Transport, and Study materials</p>
+            </div>
+            <div class="strategy-card" data-strategy="saver">
+              <h5>Aggressive Saver</h5>
+              <p>Strict caps on shopping and leisure to maximize monthly savings</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label style="display: flex; justify-content: space-between;">
+            <span>Auto-Calculated Allocations</span>
+            <span style="color: var(--success); font-weight: 700;">Live Preview</span>
+          </label>
+          <div id="budget-allocation-preview" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 10px 14px; max-height: 180px; overflow-y: auto;">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-smart-budget-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-interactive">
+          <i class="fa-solid fa-check"></i> Apply Budget Plan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add/Edit Expense Modal -->
+<div class="modal-overlay" id="expense-modal">
+  <div class="modal-content animate-modal">
+    <div class="modal-header">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon" style="width: 32px; height: 32px; font-size: 0.95rem;">
+          <i class="fa-solid fa-receipt"></i>
+        </div>
+        <h3 id="modal-title">Add New Expense</h3>
+      </div>
+      <button class="modal-close-btn close-expense-modal" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form id="expense-form">
+      <input type="hidden" id="expense-id" name="id" value="">
+      <input type="hidden" id="expense-payment-method" name="payment_method" value="UPI">
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="expense-title">Expense Title / Description *</label>
+          <div class="input-with-icon">
+            <i class="fa-solid fa-tag"></i>
+            <input type="text" id="expense-title" class="form-control" placeholder="e.g. Grocery Shopping, Fuel, Coffee" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="expense-amount">Amount (₹) *</label>
+            <div class="input-with-icon">
+              <i class="fa-solid fa-indian-rupee-sign"></i>
+              <input type="number" id="expense-amount" class="form-control" placeholder="0.00" step="0.01" min="0.01" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="expense-category">Category *</label>
+            <select id="expense-category" class="custom-select" style="width: 100%; height: 44px;" required>
+              <option value="">Select Category</option>
+              <option value="1">🍽️ Food & Dining</option>
+              <option value="2">🚗 Transportation</option>
+              <option value="3">🛍️ Shopping</option>
+              <option value="4">💡 Bills & Utilities</option>
+              <option value="5">🎬 Entertainment</option>
+              <option value="6">💊 Health & Fitness</option>
+              <option value="7">🎓 Education</option>
+              <option value="8">🛒 Groceries</option>
+              <option value="9">📦 Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="expense-date">Expense Date *</label>
+          <div class="input-with-icon">
+            <i class="fa-regular fa-calendar-days"></i>
+            <input type="date" id="expense-date" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Payment Method</label>
+          <div class="payment-methods-grid">
+            <div class="payment-pill selected" data-method="UPI">
+              <i class="fa-solid fa-mobile-screen"></i>
+              <span>UPI / QR</span>
+            </div>
+            <div class="payment-pill" data-method="Credit Card">
+              <i class="fa-regular fa-credit-card"></i>
+              <span>Credit Card</span>
+            </div>
+            <div class="payment-pill" data-method="Debit Card">
+              <i class="fa-solid fa-credit-card"></i>
+              <span>Debit Card</span>
+            </div>
+            <div class="payment-pill" data-method="Cash">
+              <i class="fa-solid fa-money-bill-wave"></i>
+              <span>Cash</span>
+            </div>
+            <div class="payment-pill" data-method="Net Banking">
+              <i class="fa-solid fa-building-columns"></i>
+              <span>Net Banking</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="expense-notes">Optional Notes</label>
+          <div class="input-with-icon">
+            <i class="fa-regular fa-note-sticky"></i>
+            <input type="text" id="expense-notes" class="form-control" placeholder="Add additional details or merchant name...">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary close-expense-modal">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-interactive" id="expense-submit-btn">
+          <i class="fa-solid fa-plus"></i> Save Expense
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Setup Guide Modal -->
+<div class="modal-overlay" id="db-guide-modal">
+  <div class="modal-content animate-modal" style="max-width: 600px;">
+    <div class="modal-header">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <i class="fa-solid fa-shield-halved" style="color: var(--accent-primary); font-size: 1.2rem;"></i>
+        <h3>Secure MySQL Database Setup</h3>
+      </div>
+      <button class="modal-close-btn" onclick="document.getElementById('db-guide-modal').classList.remove('active');">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="modal-body" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+      <p style="margin-bottom: 12px;">To run this project with full PHP/MySQL stack:</p>
+      <ol style="margin-left: 20px; display: flex; flex-direction: column; gap: 10px;">
+        <li>Start <strong>Apache</strong> and <strong>MySQL</strong> in XAMPP or Laragon.</li>
+        <li>Open <code>http://localhost/phpmyadmin</code>.</li>
+        <li>Import <code>database.sql</code> from this project folder.</li>
+        <li>Place this project folder into <code>htdocs</code> and visit <code>http://localhost/expense-tracker</code>.</li>
+      </ol>
+      <div style="margin-top: 14px; padding: 12px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.82rem;">
+        🔒 <strong>Data Leakage Prevention:</strong> Scoped user IDs, CSRF tokens, secure session cookies (HttpOnly, SameSite=Lax), and parameterized queries protect all financial data.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="document.getElementById('db-guide-modal').classList.remove('active');">
+        Understood!
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<!-- Scripts -->
+<script src="assets/js/main.js"></script>
+<script src="assets/js/dashboard.js"></script>
+
+</body>
+</html>
